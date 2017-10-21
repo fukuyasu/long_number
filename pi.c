@@ -240,7 +240,7 @@ int main(int argc, char *argv[])
     int i;
     int opts;
 
-    program_name = argv[0];
+    program_name = basename(argv[0]);
     opts = parse_options(argc, argv);
     argc -= opts;
     argv += opts;

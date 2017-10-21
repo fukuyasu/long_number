@@ -36,20 +36,21 @@ void l4_print(int c[], int l, char *s)
 
     if (env_columns != NULL) {
         cols = atoi(env_columns);
+        if (cols < 40) cols = 40;
     }
-    if (cols < 50) cols = 50;
 
     printf("%3s %3d.", s, c[0]);
     for (i = 1; i < l; i++) {
         printf("%0*d ", L4_DIGITS, c[i]);
         if (i % ((cols-30)/(L4_DIGITS+1)) == 0 && i != l-1) {
             ep = i * L4_DIGITS;
-            printf("(%d-%d)\n        ", sp, ep);
+            printf("(%4d-%4d)\n", sp, ep);
+            printf("        ");
             sp = ep + 1;
         }
     }
     ep = (l-1) * L4_DIGITS;
-    printf("(%d-%d)\n", sp, ep);
+    printf("(%4d-%4d)\n", sp, ep);
 }
 
 void l4_add(int c[], int a[], int b[], int l)

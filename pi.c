@@ -21,12 +21,12 @@
 #include <unistd.h>
 #include <libgen.h>
 
-#define L4_DIGITS 4
-#define L4_MAXNUM 10000  /* 10^L4_DIGITS */
+#define LN_DIGITS 4
+#define LN_MAXNUM 10000  /* 10^LN_DIGITS */
 
 /**********************************************************************/
 
-void l4_print(int c[], int l, char *s)
+void ln_print(int c[], int l, char *s)
 {
     int i;
     int sp = 1, ep;
@@ -41,33 +41,33 @@ void l4_print(int c[], int l, char *s)
 
     printf("%3s %3d.", s, c[0]);
     for (i = 1; i < l; i++) {
-        printf("%0*d ", L4_DIGITS, c[i]);
-        if (i % ((cols-30)/(L4_DIGITS+1)) == 0 && i != l-1) {
-            ep = i * L4_DIGITS;
+        printf("%0*d ", LN_DIGITS, c[i]);
+        if (i % ((cols-30)/(LN_DIGITS+1)) == 0 && i != l-1) {
+            ep = i * LN_DIGITS;
             printf("(%4d-%4d)\n", sp, ep);
             printf("        ");
             sp = ep + 1;
         }
     }
-    ep = (l-1) * L4_DIGITS;
+    ep = (l-1) * LN_DIGITS;
     printf("(%4d-%4d)\n", sp, ep);
 }
 
-void l4_add(int c[], int a[], int b[], int l)
+void ln_add(int c[], int a[], int b[], int l)
 {
     int i, cy = 0;
     for (i = l; i >= 0; i--) {
         c[i] = a[i] + b[i] + cy;
-        if (c[i] < L4_MAXNUM) {
+        if (c[i] < LN_MAXNUM) {
             cy = 0;
         } else {
-            c[i] = c[i] - L4_MAXNUM;
+            c[i] = c[i] - LN_MAXNUM;
             cy = 1;
         }
     }
 }
 
-void l4_sub(int c[], int a[], int b[], int l)
+void ln_sub(int c[], int a[], int b[], int l)
 {
     int i, br = 0;
     for (i = l; i >= 0; i--) {
@@ -75,23 +75,23 @@ void l4_sub(int c[], int a[], int b[], int l)
         if (c[i] >= 0) {
             br = 0;
         } else {
-            c[i] = c[i] + L4_MAXNUM;
+            c[i] = c[i] + LN_MAXNUM;
             br = 1;
         }
     }
 }
 
-void l4_div(int c[], int a[], int b, int l)
+void ln_div(int c[], int a[], int b, int l)
 {
     int i, d, rem = 0;
     for (i = 0; i <= l; i++){
         d = a[i];
         c[i] = (d + rem) / b;
-        rem = ((d + rem) % b) * L4_MAXNUM;
+        rem = ((d + rem) % b) * LN_MAXNUM;
     }
 }
 
-int l4_eps(int a[], int l)
+int ln_eps(int a[], int l)
 {
     int i;
     for (i = 0; i < l; i++) {
@@ -194,33 +194,33 @@ int machin(int pi[], int k)
 
     /* Machin's Formula */
     a[0] = 16;
-    l4_div(a, a, 5, k+1);            /* a = 16 / 5  */
+    ln_div(a, a, 5, k+1);            /* a = 16 / 5  */
     b[0] = 4;
-    l4_div(b, b, 239, k+1);          /* b = 4 / 239 */
-    l4_sub(c, a, b, k+1);            /* c = a - b   */
+    ln_div(b, b, 239, k+1);          /* b = 4 / 239 */
+    ln_sub(c, a, b, k+1);            /* c = a - b   */
     m = 1;
     i = 0;
     do {
         if (i % 2 == 0) {
-            l4_add(pi, pi, c, k+1);  /* pi = pi + (-1)^i * (a - b) */
+            ln_add(pi, pi, c, k+1);  /* pi = pi + (-1)^i * (a - b) */
         } else {
-            l4_sub(pi, pi, c, k+1);
+            ln_sub(pi, pi, c, k+1);
         }
 
         i++;
         if (verbose_mode) {
             printf("%dth:\n", i);
-            l4_print(c, k+1, i % 2 ? "+" : "-");
-            l4_print(pi, k+1, "");
+            ln_print(c, k+1, i % 2 ? "+" : "-");
+            ln_print(pi, k+1, "");
             printf("\n");
         }
 
-        l4_div(a, a, 5*5, k+1);      /* a = a / 5^2   */
-        l4_div(b, b, 239*239, k+1);  /* b = b / 239^2 */
-        l4_sub(c, a, b, k+1);
+        ln_div(a, a, 5*5, k+1);      /* a = a / 5^2   */
+        ln_div(b, b, 239*239, k+1);  /* b = b / 239^2 */
+        ln_sub(c, a, b, k+1);
         m += 2;
-        l4_div(c, c, m, k+1);        /* c = (a - b) / (2*i+1) */
-    } while (!l4_eps(c, k));
+        ln_div(c, c, m, k+1);        /* c = (a - b) / (2*i+1) */
+    } while (!ln_eps(c, k));
 
     free(a);
     free(b);
@@ -244,8 +244,8 @@ int main(int argc, char *argv[])
     digits = 1000;
     if (argc != 0) digits = atoi(argv[0]);
 
-    k = (digits + L4_DIGITS - 1) / L4_DIGITS + 1;
-    n = (k - 1) * L4_DIGITS;
+    k = (digits + LN_DIGITS - 1) / LN_DIGITS + 1;
+    n = (k - 1) * LN_DIGITS;
     if (digits != n) {
         fprintf(stderr, "Warning: %d is normalized to %d.\n", digits, n);
     }
@@ -262,7 +262,7 @@ int main(int argc, char *argv[])
 
     if (!silent_mode) {
         printf("pi:\n");
-        l4_print(pi, k, "");
+        ln_print(pi, k, "");
         printf("\n");
     }
 

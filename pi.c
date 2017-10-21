@@ -31,22 +31,22 @@ void l4_print(int c[], int l, char *s)
     int i;
     int sp = 1, ep;
 
-	int cols = 80;
-	char *env_columns = getenv("COLUMNS");
+    int cols = 80;
+    char *env_columns = getenv("COLUMNS");
 
-	if (env_columns != NULL) {
-		cols = atoi(env_columns);
-	}
-	if (cols < 50) cols = 50;
-	
+    if (env_columns != NULL) {
+        cols = atoi(env_columns);
+    }
+    if (cols < 50) cols = 50;
+
     printf("%3s %3d.", s, c[0]);
     for (i = 1; i < l; i++) {
         printf("%0*d ", L4_DIGITS, c[i]);
-		if (i % ((cols-30)/(L4_DIGITS+1)) == 0 && i != l-1) {
-			ep = i * L4_DIGITS;
-			printf("(%d-%d)\n        ", sp, ep);
-			sp = ep + 1;
-		}
+        if (i % ((cols-30)/(L4_DIGITS+1)) == 0 && i != l-1) {
+            ep = i * L4_DIGITS;
+            printf("(%d-%d)\n        ", sp, ep);
+            sp = ep + 1;
+        }
     }
     ep = (l-1) * L4_DIGITS;
     printf("(%d-%d)\n", sp, ep);
@@ -94,12 +94,12 @@ int l4_eps(int a[], int l)
 {
     int i;
     for (i = 0; i < l; i++) {
-	if (a[i] != 0) {
-	    return 0;
-	}
+        if (a[i] != 0) {
+            return 0;
+        }
     }
     if (a[l] >= 1) {
-	return 0;
+        return 0;
     }
     return 1;
 }
@@ -126,8 +126,8 @@ char *timer_str(void)
     x = tv2.tv_sec - tv1.tv_sec;
     y = tv2.tv_usec - tv1.tv_usec;
     if (y < 0) {
-	x--;
-	y += 1000000;
+        x--;
+        y += 1000000;
     }
     y /= 1000;
     sprintf(diff_str, "%d.%03d", x, y);
@@ -155,21 +155,21 @@ int parse_options(int argc, char *argv[])
     extern int optind;
 
     while ((ch = getopt(argc, argv, "svh")) != -1) {
-	switch (ch) {
-	case 's':
-	    silent_mode = 1;
-	    verbose_mode = 0;
-	    break;
-	case 'v':
-	    verbose_mode = 1;
-	    silent_mode = 0;
-	    break;
-	case 'h':
-	case '?':
-	default:
-	    usage();
-	    exit(1);
-	}
+        switch (ch) {
+        case 's':
+            silent_mode = 1;
+            verbose_mode = 0;
+            break;
+        case 'v':
+            verbose_mode = 1;
+            silent_mode = 0;
+            break;
+        case 'h':
+        case '?':
+        default:
+            usage();
+            exit(1);
+        }
     }
 
     return optind;
@@ -187,38 +187,38 @@ int machin(int pi[], int k)
     b  = (int *)calloc(k+3, sizeof(int));
     c  = (int *)calloc(k+3, sizeof(int));
     if (a == NULL || b == NULL || c == NULL) {
-	fprintf(stderr, "Error: Can't allocate memory.\n");
-	exit(1);
+        fprintf(stderr, "Error: Can't allocate memory.\n");
+        exit(1);
     }
 
     /* Machin's Formula */
     a[0] = 16;
-    l4_div(a, a, 5, k+1);	/* a = 16 / 5  */
+    l4_div(a, a, 5, k+1);            /* a = 16 / 5  */
     b[0] = 4;
-    l4_div(b, b, 239, k+1);	/* b = 4 / 239 */
-    l4_sub(c, a, b, k+1);	/* c = a - b   */
+    l4_div(b, b, 239, k+1);          /* b = 4 / 239 */
+    l4_sub(c, a, b, k+1);            /* c = a - b   */
     m = 1;
     i = 0;
     do {
-	if (i % 2 == 0) {
-	    l4_add(pi, pi, c, k+1);	/* pi = pi + (-1)^i * (a - b) */
-	} else {
-	    l4_sub(pi, pi, c, k+1);
-	}
+        if (i % 2 == 0) {
+            l4_add(pi, pi, c, k+1);  /* pi = pi + (-1)^i * (a - b) */
+        } else {
+            l4_sub(pi, pi, c, k+1);
+        }
 
-	i++;
-	if (verbose_mode) {
-	    printf("%dth:\n", i);
+        i++;
+        if (verbose_mode) {
+            printf("%dth:\n", i);
             l4_print(c, k+1, i % 2 ? "+" : "-");
-	    l4_print(pi, k+1, "");
+            l4_print(pi, k+1, "");
             printf("\n");
-	}
+        }
 
-	l4_div(a, a, 5*5, k+1);	/* a = a / 5^2   */
-	l4_div(b, b, 239*239, k+1);	/* b = b / 239^2 */
-	l4_sub(c, a, b, k+1);
-	m += 2;
-	l4_div(c, c, m, k+1);	/* c = (a - b) / (2*i+1) */
+        l4_div(a, a, 5*5, k+1);      /* a = a / 5^2   */
+        l4_div(b, b, 239*239, k+1);  /* b = b / 239^2 */
+        l4_sub(c, a, b, k+1);
+        m += 2;
+        l4_div(c, c, m, k+1);        /* c = (a - b) / (2*i+1) */
     } while (!l4_eps(c, k));
 
     free(a);

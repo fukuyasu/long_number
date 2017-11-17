@@ -21,8 +21,8 @@
 #include <unistd.h>
 #include <libgen.h>
 
-#define LN_DIGITS 5  /* max 9 digits with unsigned int */
-#define LN_MAXNUM 100000  /* 10^LN_DIGITS */
+#define LN_DIGITS 4  /* max 9 digits with unsigned int */
+#define LN_MAXNUM 10000  /* 10^LN_DIGITS */
 
 /**********************************************************************/
 

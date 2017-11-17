@@ -21,7 +21,7 @@
 #include <unistd.h>
 #include <libgen.h>
 
-#define LN_DIGITS 5
+#define LN_DIGITS 5  /* max 9 digits with unsigned int */
 #define LN_MAXNUM 100000  /* 10^LN_DIGITS */
 
 /**********************************************************************/
@@ -57,16 +57,14 @@ void ln_add(unsigned int c[], unsigned int a[], unsigned int b[], size_t l)
 {
     size_t i;
     int cy = 0;
-    long n;
     for (i = 0; i <= l; i++) {
-        n = (long)a[l-i] + b[l-i] + cy;
-        if (n < LN_MAXNUM) {
+        c[l-i] = a[l-i] + b[l-i] + cy;
+        if (c[l-i] < LN_MAXNUM) {
             cy = 0;
         } else {
-            n -= LN_MAXNUM;
+            c[l-i] -= LN_MAXNUM;
             cy = 1;
         }
-        c[l-i] = (unsigned int)n;
     }
 }
 
@@ -74,28 +72,25 @@ void ln_sub(unsigned int c[], unsigned int a[], unsigned int b[], size_t l)
 {
     size_t i;
     int br = 0;
-    long n;
     for (i = 0; i <= l; i++) {
-        n = (long)a[l-i] - b[l-i] - br;
-        if (n >= 0) {
-            br = 0;
-        } else {
-            n += LN_MAXNUM;
+        if (a[l-i] < b[l-i] + br) {
+            c[l-i] = LN_MAXNUM + a[l-i] - b[l-i] - br;
             br = 1;
+        } else {
+            c[l-i] = a[l-i] - b[l-i] - br;
+            br = 0;
         }
-        c[l-i] = (unsigned int)n;
     }
 }
 
 void ln_div(unsigned int c[], unsigned int a[], unsigned int b, size_t l)
 {
     size_t i;
-    unsigned long n, d, rem = 0;
+    unsigned long d, rem = 0;
     for (i = 0; i <= l; i++){
-        d = (unsigned long)a[i] + rem;
-        n = d / b;
+        d = a[i] + rem;
+        c[i] = d / b;
         rem = (d % b) * LN_MAXNUM;
-        c[i] = (unsigned int)n;
     }
 }
 

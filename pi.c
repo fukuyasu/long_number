@@ -58,7 +58,7 @@ void ln_add(unsigned int c[], unsigned int a[], unsigned int b[], size_t l)
     size_t i;
     int cy = 0;
     for (i = 0; i <= l; i++) {
-        c[l-i] = a[l-i] + b[l-i] + cy;
+        c[l-i] = a[l-i] + b[l-i] + cy;  /* 0 <= c[i-i] <= 2*LN_MAXNUM - 1 */
         if (c[l-i] < LN_MAXNUM) {
             cy = 0;
         } else {
@@ -73,8 +73,8 @@ void ln_sub(unsigned int c[], unsigned int a[], unsigned int b[], size_t l)
     size_t i;
     int br = 0;
     for (i = 0; i <= l; i++) {
-        if (a[l-i] < b[l-i] + br) {
-            c[l-i] = LN_MAXNUM + a[l-i] - b[l-i] - br;
+        if (a[l-i] < b[l-i] + br) { /* b[l-i] + br <= LN_MAXNUM */
+            c[l-i] = a[l-i] + (LN_MAXNUM - b[l-i] - br);
             br = 1;
         } else {
             c[l-i] = a[l-i] - b[l-i] - br;
@@ -88,9 +88,9 @@ void ln_div(unsigned int c[], unsigned int a[], unsigned int b, size_t l)
     size_t i;
     unsigned long d, rem = 0;
     for (i = 0; i <= l; i++){
-        d = a[i] + rem;
-        c[i] = d / b;
-        rem = (d % b) * LN_MAXNUM;
+        d = a[i] + rem * LN_MAXNUM; /* 0 <= d <= b * LN_MAXNUM - 1 */
+        c[i] = d / b;               /* 0 <= c[i] <= LN_MAXNUM - 1 */
+        rem = d % b;                /* 0 <= rem <= b-1 */
     }
 }
 

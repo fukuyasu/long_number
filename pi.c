@@ -28,7 +28,7 @@
 
 void ln_print(unsigned int c[], size_t l, char *s)
 {
-    size_t i;
+    int i;
     size_t sp = 1, ep;
 
     int cols = 80;
@@ -55,14 +55,14 @@ void ln_print(unsigned int c[], size_t l, char *s)
 
 void ln_add(unsigned int c[], unsigned int a[], unsigned int b[], size_t l)
 {
-    size_t i;
+    int i;
     int cy = 0;
-    for (i = 0; i <= l; i++) {
-        c[l-i] = a[l-i] + b[l-i] + cy;  /* 0 <= c[i-i] <= 2*LN_MAXNUM - 1 */
-        if (c[l-i] < LN_MAXNUM) {
+    for (i = l; i >= 0; i--) {
+        c[i] = a[i] + b[i] + cy;  /* 0 <= c[i] <= 2*LN_MAXNUM - 1 */
+        if (c[i] < LN_MAXNUM) {
             cy = 0;
         } else {
-            c[l-i] -= LN_MAXNUM;
+            c[i] -= LN_MAXNUM;
             cy = 1;
         }
     }
@@ -70,14 +70,14 @@ void ln_add(unsigned int c[], unsigned int a[], unsigned int b[], size_t l)
 
 void ln_sub(unsigned int c[], unsigned int a[], unsigned int b[], size_t l)
 {
-    size_t i;
+    int i;
     int br = 0;
-    for (i = 0; i <= l; i++) {
-        if (a[l-i] < b[l-i] + br) { /* b[l-i] + br <= LN_MAXNUM */
-            c[l-i] = a[l-i] + (LN_MAXNUM - b[l-i] - br);
+    for (i = l; i >= 0; i--) {
+        if (a[i] < b[i] + br) { /* b[i] + br <= LN_MAXNUM */
+            c[i] = a[i] + (LN_MAXNUM - b[i] - br);
             br = 1;
         } else {
-            c[l-i] = a[l-i] - b[l-i] - br;
+            c[i] = a[i] - b[i] - br;
             br = 0;
         }
     }
@@ -85,7 +85,7 @@ void ln_sub(unsigned int c[], unsigned int a[], unsigned int b[], size_t l)
 
 void ln_div(unsigned int c[], unsigned int a[], unsigned int b, size_t l)
 {
-    size_t i;
+    int i;
     unsigned long d, rem = 0;
     for (i = 0; i <= l; i++){
         d = a[i] + rem * LN_MAXNUM; /* 0 <= d <= b * LN_MAXNUM - 1 */
@@ -96,14 +96,11 @@ void ln_div(unsigned int c[], unsigned int a[], unsigned int b, size_t l)
 
 int ln_eps(unsigned int a[], size_t l)
 {
-    size_t i;
-    for (i = 0; i < l; i++) {
+    int i;
+    for (i = 0; i <= l; i++) {
         if (a[i] != 0) {
             return 0;
         }
-    }
-    if (a[l] >= 1) {
-        return 0;
     }
     return 1;
 }
@@ -185,11 +182,11 @@ int parse_options(int argc, char *argv[])
 
 /**********************************************************************/
 
-size_t machin(int pi[], size_t k)
+int machin(int pi[], size_t k)
 {
     unsigned int *a, *b, *c;
     unsigned int m;
-    size_t i;
+    int i;
 
     a  = (unsigned int *)calloc(k+3, sizeof(unsigned int));
     b  = (unsigned int *)calloc(k+3, sizeof(unsigned int));
@@ -239,9 +236,9 @@ size_t machin(int pi[], size_t k)
 int main(int argc, char *argv[])
 {
     unsigned int *pi;
-    int digits;
-    size_t k, n;
-    size_t i;
+    int digits, n;
+    size_t k;
+    int i;
     int opts;
 
     program_name = basename(argv[0]);
@@ -255,7 +252,7 @@ int main(int argc, char *argv[])
     k = (digits + LN_DIGITS - 1) / LN_DIGITS + 1;
     n = (k - 1) * LN_DIGITS;
     if (digits != n) {
-        fprintf(stderr, "Warning: %d is normalized to %zu.\n", digits, n);
+        fprintf(stderr, "Warning: %d is normalized to %d.\n", digits, n);
     }
 
     pi = (unsigned int *)calloc(k+3, sizeof(unsigned int));
@@ -276,7 +273,7 @@ int main(int argc, char *argv[])
 
     free(pi);
 
-    printf("%zu digits: %s seconds, %zu iterations.\n", n, timer_str(), i);
+    printf("%d digits: %s seconds, %d iterations.\n", n, timer_str(), i);
 
     return 0;
 }

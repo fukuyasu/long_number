@@ -21,15 +21,15 @@
 #include <unistd.h>
 #include <libgen.h>
 
-#define LN_DIGITS 4
-#define LN_MAXNUM 10000  /* 10^LN_DIGITS */
+#define LN_DIGITS 5
+#define LN_MAXNUM 100000  /* 10^LN_DIGITS */
 
 /**********************************************************************/
 
-void ln_print(int c[], int l, char *s)
+void ln_print(unsigned int c[], size_t l, char *s)
 {
-    int i;
-    int sp = 1, ep;
+    size_t i;
+    size_t sp = 1, ep;
 
     int cols = 80;
     char *env_columns = getenv("COLUMNS");
@@ -39,61 +39,69 @@ void ln_print(int c[], int l, char *s)
         if (cols < 40) cols = 40;
     }
 
-    printf("%3s %3d.", s, c[0]);
+    printf("%3s %3u.", s, c[0]);
     for (i = 1; i < l; i++) {
-        printf("%0*d ", LN_DIGITS, c[i]);
+        printf("%0*u ", LN_DIGITS, c[i]);
         if (i % ((cols-30)/(LN_DIGITS+1)) == 0 && i != l-1) {
             ep = i * LN_DIGITS;
-            printf("(%4d-%4d)\n", sp, ep);
+            printf("(%4zu-%4zu)\n", sp, ep);
             printf("        ");
             sp = ep + 1;
         }
     }
     ep = (l-1) * LN_DIGITS;
-    printf("(%4d-%4d)\n", sp, ep);
+    printf("(%4zu-%4zu)\n", sp, ep);
 }
 
-void ln_add(int c[], int a[], int b[], int l)
+void ln_add(unsigned int c[], unsigned int a[], unsigned int b[], size_t l)
 {
-    int i, cy = 0;
-    for (i = l; i >= 0; i--) {
-        c[i] = a[i] + b[i] + cy;
-        if (c[i] < LN_MAXNUM) {
+    size_t i;
+    int cy = 0;
+    long n;
+    for (i = 0; i <= l; i++) {
+        n = (long)a[l-i] + b[l-i] + cy;
+        if (n < LN_MAXNUM) {
             cy = 0;
         } else {
-            c[i] = c[i] - LN_MAXNUM;
+            n -= LN_MAXNUM;
             cy = 1;
         }
+        c[l-i] = (unsigned int)n;
     }
 }
 
-void ln_sub(int c[], int a[], int b[], int l)
+void ln_sub(unsigned int c[], unsigned int a[], unsigned int b[], size_t l)
 {
-    int i, br = 0;
-    for (i = l; i >= 0; i--) {
-        c[i] = a[i] - b[i] - br;
-        if (c[i] >= 0) {
+    size_t i;
+    int br = 0;
+    long n;
+    for (i = 0; i <= l; i++) {
+        n = (long)a[l-i] - b[l-i] - br;
+        if (n >= 0) {
             br = 0;
         } else {
-            c[i] = c[i] + LN_MAXNUM;
+            n += LN_MAXNUM;
             br = 1;
         }
+        c[l-i] = (unsigned int)n;
     }
 }
 
-void ln_div(int c[], int a[], int b, int l)
+void ln_div(unsigned int c[], unsigned int a[], unsigned int b, size_t l)
 {
-    int i, d, rem = 0;
+    size_t i;
+    unsigned long n, d, rem = 0;
     for (i = 0; i <= l; i++){
-        d = a[i];
-        c[i] = (d + rem) / b;
-        rem = ((d + rem) % b) * LN_MAXNUM;
+        d = (unsigned long)a[i] + rem;
+        n = d / b;
+        rem = (d % b) * LN_MAXNUM;
+        c[i] = (unsigned int)n;
     }
 }
 
-int ln_eps(int a[], int l)
+int ln_eps(unsigned int a[], size_t l)
 {
-    int i;
+    size_t i;
     for (i = 0; i < l; i++) {
         if (a[i] != 0) {
             return 0;
@@ -182,15 +190,15 @@ int parse_options(int argc, char *argv[])
 
 /**********************************************************************/
 
-int machin(int pi[], int k)
+size_t machin(int pi[], size_t k)
 {
-    int *a, *b, *c;
-    int m;
-    int i;
+    unsigned int *a, *b, *c;
+    unsigned int m;
+    size_t i;
 
-    a  = (int *)calloc(k+3, sizeof(int));
-    b  = (int *)calloc(k+3, sizeof(int));
-    c  = (int *)calloc(k+3, sizeof(int));
+    a  = (unsigned int *)calloc(k+3, sizeof(unsigned int));
+    b  = (unsigned int *)calloc(k+3, sizeof(unsigned int));
+    c  = (unsigned int *)calloc(k+3, sizeof(unsigned int));
     if (a == NULL || b == NULL || c == NULL) {
         fprintf(stderr, "Error: Can't allocate memory.\n");
         exit(1);
@@ -235,9 +243,10 @@ int machin(int pi[], int k)
 
 int main(int argc, char *argv[])
 {
-    int *pi;
-    int k, n, digits;
-    int i;
+    unsigned int *pi;
+    int digits;
+    size_t k, n;
+    size_t i;
     int opts;
 
     program_name = basename(argv[0]);
@@ -251,10 +260,10 @@ int main(int argc, char *argv[])
     k = (digits + LN_DIGITS - 1) / LN_DIGITS + 1;
     n = (k - 1) * LN_DIGITS;
     if (digits != n) {
-        fprintf(stderr, "Warning: %d is normalized to %d.\n", digits, n);
+        fprintf(stderr, "Warning: %d is normalized to %zu.\n", digits, n);
     }
 
-    pi = (int *)calloc(k+3, sizeof(int));
+    pi = (unsigned int *)calloc(k+3, sizeof(unsigned int));
     if (pi == NULL) {
         fprintf(stderr, "Error: Can't allocate memory.\n");
         exit(1);
@@ -272,7 +281,7 @@ int main(int argc, char *argv[])
 
     free(pi);
 
-    printf("%d digits: %s seconds, %d iterations.\n", n, timer_str(), i);
+    printf("%zu digits: %s seconds, %zu iterations.\n", n, timer_str(), i);
 
     return 0;
 }

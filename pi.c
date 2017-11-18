@@ -22,9 +22,25 @@
 #include <libgen.h>
 
 #define LN_DIGITS 4  /* max 9 digits with unsigned int */
-#define LN_MAXNUM 10000  /* 10^LN_DIGITS */
 
 /**********************************************************************/
+
+static unsigned long LN_MAXNUM = 1L;
+
+static void ln_init_maxnum(void)
+{
+    if (LN_MAXNUM == 1) {
+        int i;
+        for (i = 0; i < LN_DIGITS; i++) {
+            LN_MAXNUM *= 10;
+        }
+    }
+}
+
+void ln_init(void)
+{
+    ln_init_maxnum();
+}
 
 void ln_print(unsigned int c[], size_t l, char *s)
 {
@@ -254,6 +270,8 @@ int main(int argc, char *argv[])
     if (digits != n) {
         fprintf(stderr, "Warning: %d is normalized to %d.\n", digits, n);
     }
+
+    ln_init();
 
     pi = (unsigned int *)calloc(k+3, sizeof(unsigned int));
     if (pi == NULL) {

@@ -27,14 +27,14 @@
 
 /**********************************************************************/
 
-static unsigned long LN_MAXNUM = 1L;
+static unsigned long long LN_MAXNUM = 1U;
 
 static void ln_init_maxnum(void)
 {
     if (LN_MAXNUM == 1) {
         int i;
         for (i = 0; i < LN_DIGITS; i++) {
-            LN_MAXNUM *= 10;
+            LN_MAXNUM *= 10U;
         }
     }
 }
@@ -104,7 +104,8 @@ void ln_sub(unsigned int c[], unsigned int a[], unsigned int b[], size_t l)
 void ln_div(unsigned int c[], unsigned int a[], unsigned int b, size_t l)
 {
     int i;
-    unsigned long d, rem = 0;
+    unsigned int rem = 0;
+    unsigned long long d;
     for (i = 0; i <= l; i++){
         d = a[i] + rem * LN_MAXNUM; /* 0 <= d <= b * LN_MAXNUM - 1 */
         c[i] = d / b;               /* 0 <= c[i] <= LN_MAXNUM - 1 */

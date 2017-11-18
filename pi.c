@@ -21,10 +21,6 @@
 #include <unistd.h>
 #include <libgen.h>
 
-#if !defined(LN_DIGITS)
-#define LN_DIGITS 4  /* max 9 digits with unsigned int */
-#endif /* !defined(LN_DIGITS) */
-
 /**********************************************************************/
 
 typedef unsigned int *LongNumber;
@@ -37,22 +33,28 @@ void ln_sub(LongNumber c, LongNumber a, LongNumber b, size_t l);
 void ln_div(LongNumber c, LongNumber a, unsigned int b, size_t l);
 int ln_eps(LongNumber a, size_t l);
 
+static int LN_DIGITS;   /* max 9 digits with unsigned int */
 static unsigned long long LN_MAXNUM = 1U;
 
-static void ln_init_maxnum(void)
+int ln_init(int digits)
 {
+    if (digits < 1 || 9 < digits) {
+        fprintf(stderr, "Warning: %d: invalid digit size.\n", digits);
+        digits = 4;
+    }
+    LN_DIGITS = digits;
     if (LN_MAXNUM == 1) {
         int i;
         for (i = 0; i < LN_DIGITS; i++) {
             LN_MAXNUM *= 10U;
         }
     }
+    return digits;
 }
 
 LongNumber ln_create(size_t l, unsigned int x, unsigned int y)
 {
     unsigned int *ln;
-    ln_init_maxnum();
     ln = (unsigned int *)calloc(sizeof(unsigned int), l+2);
     if (ln == NULL) {
         fprintf(stderr, "Error: Can't allocate memory.\n");
@@ -186,13 +188,15 @@ char *timer_str(void)
 static char *program_name = "";
 static int silent_mode = 0;
 static int verbose_mode = 0;
+static int ln_digits = 4;
 
 void usage(void)
 {
-    fprintf(stderr, "usage: %s [-svh] <digits>\n", program_name);
+    fprintf(stderr, "usage: %s [-svh][-d <num>] <digits>\n", program_name);
     fprintf(stderr, "            -s: silent mode.\n");
     fprintf(stderr, "            -v: verbose mode.\n");
     fprintf(stderr, "            -h: print usage.\n");
+    fprintf(stderr, "            -d <num>: size for each digit [1-9].\n");
 }
 
 int parse_options(int argc, char *argv[])
@@ -200,12 +204,17 @@ int parse_options(int argc, char *argv[])
     int ch;
 #if defined(__CYGWIN__)
     extern int __declspec(dllimport) optind;
+    extern char __declspec(dllimport) *optarg;
 #else /* !defined(__CYGWIN__) */
     extern int optind;
+    extern char *optarg;
 #endif /* defined(__CYGWIN__) */
 
-    while ((ch = getopt(argc, argv, "svh")) != -1) {
+    while ((ch = getopt(argc, argv, "d:svh")) != -1) {
         switch (ch) {
+        case 'd':
+            ln_digits = atoi(optarg);
+            break;
         case 's':
             silent_mode = 1;
             verbose_mode = 0;
@@ -286,8 +295,10 @@ int main(int argc, char *argv[])
     digits = 1000;
     if (argc != 0) digits = atoi(argv[0]);
 
-    k = (digits + LN_DIGITS - 1) / LN_DIGITS + 1;
-    n = (k - 1) * LN_DIGITS;
+    ln_digits = ln_init(ln_digits);
+
+    k = (digits + ln_digits - 1) / ln_digits + 1;
+    n = (k - 1) * ln_digits;
     if (digits != n) {
         fprintf(stderr, "Warning: %d is normalized to %d.\n", digits, n);
     }

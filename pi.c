@@ -27,6 +27,16 @@
 
 /**********************************************************************/
 
+typedef unsigned int *LongNumber;
+
+LongNumber ln_create(size_t l, unsigned int x, unsigned int y);
+void ln_free(LongNumber ln);
+void ln_print(LongNumber c, size_t l, char *s);
+void ln_add(LongNumber c, LongNumber a, LongNumber b, size_t l);
+void ln_sub(LongNumber c, LongNumber a, LongNumber b, size_t l);
+void ln_div(LongNumber c, LongNumber a, unsigned int b, size_t l);
+int ln_eps(LongNumber a, size_t l);
+
 static unsigned long long LN_MAXNUM = 1U;
 
 static void ln_init_maxnum(void)
@@ -39,12 +49,28 @@ static void ln_init_maxnum(void)
     }
 }
 
-void ln_init(void)
+LongNumber ln_create(size_t l, unsigned int x, unsigned int y)
 {
+    unsigned int *ln;
     ln_init_maxnum();
+    ln = (unsigned int *)calloc(sizeof(unsigned int), l+2);
+    if (ln == NULL) {
+        fprintf(stderr, "Error: Can't allocate memory.\n");
+        exit(1);
+    }
+    ln[0] = x;
+    if (y > 1) {
+        ln_div(ln, ln, y, l+1);
+    }
+    return ln;
 }
 
-void ln_print(unsigned int c[], size_t l, char *s)
+void ln_free(LongNumber ln)
+{
+    if (ln != NULL) free(ln);
+}
+
+void ln_print(LongNumber c, size_t l, char *s)
 {
     int i;
     size_t sp = 1, ep;
@@ -71,11 +97,11 @@ void ln_print(unsigned int c[], size_t l, char *s)
     printf("(%4zu-%4zu)\n", sp, ep);
 }
 
-void ln_add(unsigned int c[], unsigned int a[], unsigned int b[], size_t l)
+void ln_add(LongNumber c, LongNumber a, LongNumber b, size_t l)
 {
     int i;
     int cy = 0;
-    for (i = l; i >= 0; i--) {
+    for (i = l+1; i >= 0; i--) {
         c[i] = a[i] + b[i] + cy;  /* 0 <= c[i] <= 2*LN_MAXNUM - 1 */
         if (c[i] < LN_MAXNUM) {
             cy = 0;
@@ -86,11 +112,11 @@ void ln_add(unsigned int c[], unsigned int a[], unsigned int b[], size_t l)
     }
 }
 
-void ln_sub(unsigned int c[], unsigned int a[], unsigned int b[], size_t l)
+void ln_sub(LongNumber c, LongNumber a, LongNumber b, size_t l)
 {
     int i;
     int br = 0;
-    for (i = l; i >= 0; i--) {
+    for (i = l+1; i >= 0; i--) {
         if (a[i] < b[i] + br) { /* b[i] + br <= LN_MAXNUM */
             c[i] = a[i] + (LN_MAXNUM - b[i] - br);
             br = 1;
@@ -101,22 +127,22 @@ void ln_sub(unsigned int c[], unsigned int a[], unsigned int b[], size_t l)
     }
 }
 
-void ln_div(unsigned int c[], unsigned int a[], unsigned int b, size_t l)
+void ln_div(LongNumber c, LongNumber a, unsigned int b, size_t l)
 {
     int i;
     unsigned int rem = 0;
     unsigned long long d;
-    for (i = 0; i <= l; i++){
+    for (i = 0; i <= l+1; i++){
         d = a[i] + rem * LN_MAXNUM; /* 0 <= d <= b * LN_MAXNUM - 1 */
         c[i] = d / b;               /* 0 <= c[i] <= LN_MAXNUM - 1 */
         rem = d % b;                /* 0 <= rem <= b-1 */
     }
 }
 
-int ln_eps(unsigned int a[], size_t l)
+int ln_eps(LongNumber a, size_t l)
 {
     int i;
-    for (i = 0; i <= l; i++) {
+    for (i = 0; i <= l+1; i++) {
         if (a[i] != 0) {
             return 0;
         }
@@ -201,33 +227,25 @@ int parse_options(int argc, char *argv[])
 
 /**********************************************************************/
 
-int machin(int pi[], size_t k)
+int machin(LongNumber pi, size_t k)
 {
-    unsigned int *a, *b, *c;
+    LongNumber a, b, c;
     unsigned int m;
     int i;
 
-    a  = (unsigned int *)calloc(k+3, sizeof(unsigned int));
-    b  = (unsigned int *)calloc(k+3, sizeof(unsigned int));
-    c  = (unsigned int *)calloc(k+3, sizeof(unsigned int));
-    if (a == NULL || b == NULL || c == NULL) {
-        fprintf(stderr, "Error: Can't allocate memory.\n");
-        exit(1);
-    }
-
     /* Machin's Formula */
-    a[0] = 16;
-    ln_div(a, a, 5, k+1);            /* a = 16 / 5  */
-    b[0] = 4;
-    ln_div(b, b, 239, k+1);          /* b = 4 / 239 */
-    ln_sub(c, a, b, k+1);            /* c = a - b   */
+    a = ln_create(k, 16, 5);        /* a = 16 / 5  */
+    b = ln_create(k, 4, 239);       /* b = 4 / 239 */
+    c = ln_create(k, 0, 1);
+    ln_sub(c, a, b, k);           /* c = a - b   */
+
     m = 1;
     i = 0;
     do {
         if (i % 2 == 0) {
-            ln_add(pi, pi, c, k+1);  /* pi = pi + (-1)^i * (a - b) */
+            ln_add(pi, pi, c, k);  /* pi = pi + (-1)^i * (a - b) */
         } else {
-            ln_sub(pi, pi, c, k+1);
+            ln_sub(pi, pi, c, k);
         }
 
         i++;
@@ -238,23 +256,23 @@ int machin(int pi[], size_t k)
             printf("\n");
         }
 
-        ln_div(a, a, 5*5, k+1);      /* a = a / 5^2   */
-        ln_div(b, b, 239*239, k+1);  /* b = b / 239^2 */
-        ln_sub(c, a, b, k+1);
+        ln_div(a, a, 5*5, k);      /* a = a / 5^2   */
+        ln_div(b, b, 239*239, k);  /* b = b / 239^2 */
+        ln_sub(c, a, b, k);
         m += 2;
-        ln_div(c, c, m, k+1);        /* c = (a - b) / (2*i+1) */
+        ln_div(c, c, m, k);        /* c = (a - b) / (2*i+1) */
     } while (!ln_eps(c, k));
 
-    free(a);
-    free(b);
-    free(c);
+    ln_free(a);
+    ln_free(b);
+    ln_free(c);
 
     return i;
 }
 
 int main(int argc, char *argv[])
 {
-    unsigned int *pi;
+    LongNumber pi;
     int digits, n;
     size_t k;
     int i;
@@ -274,13 +292,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Warning: %d is normalized to %d.\n", digits, n);
     }
 
-    ln_init();
-
-    pi = (unsigned int *)calloc(k+3, sizeof(unsigned int));
-    if (pi == NULL) {
-        fprintf(stderr, "Error: Can't allocate memory.\n");
-        exit(1);
-    }
+    pi = ln_create(k, 0, 1);
 
     timer_start();
     i = machin(pi, k);
@@ -292,7 +304,7 @@ int main(int argc, char *argv[])
         printf("\n");
     }
 
-    free(pi);
+    ln_free(pi);
 
     printf("%d digits: %s seconds, %d iterations.\n", n, timer_str(), i);
 

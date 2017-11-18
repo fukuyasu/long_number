@@ -188,7 +188,7 @@ char *timer_str(void)
 static char *program_name = "";
 static int silent_mode = 0;
 static int verbose_mode = 0;
-static int ln_digits = 4;
+static int dsize = 4;
 
 void usage(void)
 {
@@ -213,7 +213,7 @@ int parse_options(int argc, char *argv[])
     while ((ch = getopt(argc, argv, "d:svh")) != -1) {
         switch (ch) {
         case 'd':
-            ln_digits = atoi(optarg);
+            dsize = atoi(optarg);
             break;
         case 's':
             silent_mode = 1;
@@ -295,10 +295,10 @@ int main(int argc, char *argv[])
     digits = 1000;
     if (argc != 0) digits = atoi(argv[0]);
 
-    ln_digits = ln_init(ln_digits);
+    dsize = ln_init(dsize);
 
-    k = (digits + ln_digits - 1) / ln_digits + 1;
-    n = (k - 1) * ln_digits;
+    k = (digits + dsize - 1) / dsize + 1;
+    n = (k - 1) * dsize;
     if (digits != n) {
         fprintf(stderr, "Warning: %d is normalized to %d.\n", digits, n);
     }

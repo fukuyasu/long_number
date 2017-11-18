@@ -21,7 +21,9 @@
 #include <unistd.h>
 #include <libgen.h>
 
+#if !defined(LN_DIGITS)
 #define LN_DIGITS 4  /* max 9 digits with unsigned int */
+#endif /* !defined(LN_DIGITS) */
 
 /**********************************************************************/
 

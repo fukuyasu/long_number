@@ -172,11 +172,11 @@ void usage(void)
 int parse_options(int argc, char *argv[])
 {
     int ch;
-#ifdef __CYGWIN__
+#if defined(__CYGWIN__)
     extern int __declspec(dllimport) optind;
-#else /* __CYGWIN__ */
+#else /* !defined(__CYGWIN__) */
     extern int optind;
-#endif /* __CYGWIN__ */
+#endif /* defined(__CYGWIN__) */
 
     while ((ch = getopt(argc, argv, "svh")) != -1) {
         switch (ch) {

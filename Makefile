@@ -7,10 +7,14 @@ RM = rm -f
 all:	pi
 
 pi.o:	pi.c longnumber.h
+longnumber.o:	longnumber.c longnumber.h
 
-pi:	pi.o
-	$(CC) -o pi pi.o
+pi:	pi.o longnumber.o
+	$(CC) -o pi pi.o longnumber.o
 
 clean::
 	$(RM) pi
 	$(RM) pi.o
+
+clean::
+	$(RM) longnumber.o

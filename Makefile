@@ -6,6 +6,8 @@ RM = rm -f
 
 all:	pi
 
+pi.o:	pi.c longnumber.h
+
 pi:	pi.o
 	$(CC) -o pi pi.o
 

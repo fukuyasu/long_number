@@ -20,10 +20,9 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <libgen.h>
+#include "longnumber.h"
 
 /**********************************************************************/
-
-typedef unsigned int *LongNumber;
 
 LongNumber ln_create(size_t l, unsigned int x, unsigned int y);
 void ln_free(LongNumber ln);

@@ -1,17 +1,6 @@
 /*
- * Calculating the numerical value of PI using Machin's formula.
+ * Calculating the numerical value of Napier's constant.
  * Author: FUKUYASU Naoki <fukuyasu@sys.wakayama-u.ac.jp>
- */
-
-/*
- * 本プログラムは，文献[1]のpp.86-89で紹介されているプログラムを参考に，
- * 授業用に作成したものです．
- * 本プログラムでは，マチンの公式と呼ばれるarctan(x)を用いた公式を利用
- * し，マクローリン級数により，必要な桁数の値が収束するまで計算を繰り返す
- * ことによって円周率の値を求めています．
- *
- * 参考文献：
- *   [1] 河西朝雄：改定C言語によるはじめてのアルゴリズム入門，技術評論社．
  */
 
 #include <stdio.h>
@@ -106,52 +95,36 @@ int parse_options(int argc, char *argv[])
 
 /**********************************************************************/
 
-int machin(LongNumber pi, size_t k)
+int calc_napier(LongNumber e, size_t k)
 {
-    LongNumber a, b, c;
-    unsigned int m;
-    int i;
+    LongNumber a;
+    int n;
 
-    /* Machin's Formula */
-    a = ln_create(k, 16, 5);        /* a = 16 / 5  */
-    b = ln_create(k, 4, 239);       /* b = 4 / 239 */
-    c = ln_create(k, 0, 1);
-    ln_sub(c, a, b, k);           /* c = a - b   */
+    a = ln_create(k, 1, 1);        /* a = 1/0! */
 
-    m = 1;
-    i = 0;
+    n = 0;
     do {
-        if (i % 2 == 0) {
-            ln_add(pi, pi, c, k);  /* pi = pi + (-1)^i * (a - b) */
-        } else {
-            ln_sub(pi, pi, c, k);
-        }
+        ln_add(e, e, a, k);  /* e = e + 1/n! */
 
-        i++;
+        n++;
         if (verbose_mode) {
-            printf("%dth:\n", i);
-            ln_print(c, k+1, i % 2 ? "+" : "-");
-            ln_print(pi, k+1, "");
+            printf("%dth:\n", n);
+            ln_print(a, k+1, "+");
+            ln_print(e, k+1, "");
             printf("\n");
         }
 
-        ln_div(a, a, 5*5, k);      /* a = a / 5^2   */
-        ln_div(b, b, 239*239, k);  /* b = b / 239^2 */
-        ln_sub(c, a, b, k);
-        m += 2;
-        ln_div(c, c, m, k);        /* c = (a - b) / (2*i+1) */
-    } while (!ln_eps(c, k));
+        ln_div(a, a, n, k);      /* a = a/n (a = 1/n!) */
+    } while (!ln_eps(a, k));
 
     ln_free(a);
-    ln_free(b);
-    ln_free(c);
 
-    return i;
+    return n;
 }
 
 int main(int argc, char *argv[])
 {
-    LongNumber pi;
+    LongNumber e;
     int digits, n;
     size_t k;
     int i;
@@ -173,19 +146,19 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Warning: %d is normalized to %d.\n", digits, n);
     }
 
-    pi = ln_create(k, 0, 1);
+    e = ln_create(k, 0, 1);
 
     timer_start();
-    i = machin(pi, k);
+    i = calc_napier(e, k);
     timer_stop();
 
     if (!silent_mode) {
-        printf("pi:\n");
-        ln_print(pi, k, "");
+        printf("e:\n");
+        ln_print(e, k, "");
         printf("\n");
     }
 
-    ln_free(pi);
+    ln_free(e);
 
     printf("%d digits: %s seconds, %d iterations.\n", n, timer_str(), i);
 

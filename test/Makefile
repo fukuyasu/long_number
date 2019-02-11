@@ -10,8 +10,13 @@ all:	test
 test:	exec_test1
 
 exec_test1:	test1
-	./test1 |& tee test1.output
-	@diff -u test1.expected test1.output & echo "Error!"
+	@echo "Test1..."
+	@./test1 |& tee test1.output
+	@if diff -u test1.expected test1.output; then \
+		echo "Test1: clear."; \
+	else \
+		echo "Test1: failed."; \
+	fi
 
 test1.o:	test1.c ../longnumber.h
 
@@ -21,3 +26,4 @@ test1:	test1.o ../liblongnumber.a
 clean::
 	$(RM) test1
 	$(RM) test1.o
+	$(RM) test1.output

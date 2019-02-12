@@ -167,8 +167,8 @@ int main(int argc, char *argv[])
 
     dsize = ln_init(dsize);
 
-    k = (digits + dsize - 1) / dsize + 1;
-    n = (k - 1) * dsize;
+    k = (digits + dsize - 1) / dsize;
+    n = k * dsize;
     if (digits != n) {
         fprintf(stderr, "Warning: %d is normalized to %d.\n", digits, n);
     }

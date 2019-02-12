@@ -66,13 +66,13 @@ void ln_print(LongNumber *c, size_t l, char *s)
     for (i = 0; i < l; i++) {
         printf("%0*u ", LN_DIGITS, c->frac_d[i]);
         if ((i+1) % ((cols-30)/(LN_DIGITS+1)) == 0 && i != l-1) {
-            ep = i * LN_DIGITS;
+            ep = (i+1) * LN_DIGITS;
             printf("(%4zu-%4zu)\n", sp, ep);
             printf("        ");
             sp = ep + 1;
         }
     }
-    ep = (l-1) * LN_DIGITS;
+    ep = l * LN_DIGITS;
     printf("(%4zu-%4zu)\n", sp, ep);
 }
 

@@ -106,9 +106,9 @@ int parse_options(int argc, char *argv[])
 
 /**********************************************************************/
 
-int machin(LongNumber pi, size_t k)
+int machin(LongNumber *pi, size_t k)
 {
-    LongNumber a, b, c;
+    LongNumber *a, *b, *c;
     unsigned int m;
     int i;
 
@@ -151,7 +151,7 @@ int machin(LongNumber pi, size_t k)
 
 int main(int argc, char *argv[])
 {
-    LongNumber pi;
+    LongNumber *pi;
     int digits, n;
     size_t k;
     int i;
@@ -167,8 +167,8 @@ int main(int argc, char *argv[])
 
     dsize = ln_init(dsize);
 
-    k = (digits + dsize - 1) / dsize + 1;
-    n = (k - 1) * dsize;
+    k = (digits + dsize - 1) / dsize;
+    n = k * dsize;
     if (digits != n) {
         fprintf(stderr, "Warning: %d is normalized to %d.\n", digits, n);
     }

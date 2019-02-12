@@ -106,9 +106,9 @@ int parse_options(int argc, char *argv[])
 
 /**********************************************************************/
 
-int machin(LongNumber pi, size_t k)
+int machin(LongNumber *pi, size_t k)
 {
-    LongNumber a, b, c;
+    LongNumber *a, *b, *c;
     unsigned int m;
     int i;
 
@@ -151,7 +151,7 @@ int machin(LongNumber pi, size_t k)
 
 int main(int argc, char *argv[])
 {
-    LongNumber pi;
+    LongNumber *pi;
     int digits, n;
     size_t k;
     int i;

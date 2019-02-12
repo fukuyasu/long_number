@@ -95,9 +95,9 @@ int parse_options(int argc, char *argv[])
 
 /**********************************************************************/
 
-int calc_napier(LongNumber e, size_t k)
+int calc_napier(LongNumber *e, size_t k)
 {
-    LongNumber a;
+    LongNumber *a;
     int n;
 
     a = ln_create(k, 1, 1);        /* a = 1/0! */
@@ -124,7 +124,7 @@ int calc_napier(LongNumber e, size_t k)
 
 int main(int argc, char *argv[])
 {
-    LongNumber e;
+    LongNumber *e;
     int digits, n;
     size_t k;
     int i;

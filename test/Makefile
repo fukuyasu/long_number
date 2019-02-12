@@ -11,7 +11,7 @@ test:	exec_test1
 
 exec_test1:	test1
 	@echo "Test1..."
-	@./test1 |& tee test1.output
+	@./test1 | tee test1.output 2>&1
 	@if diff -u test1.expected test1.output; then \
 		echo "Test1: clear."; \
 	else \

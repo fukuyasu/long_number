@@ -61,7 +61,7 @@ void test_ln_add03(void)
 
 int main(void)
 {
-	unsetenv("COLUMNS");
+    unsetenv("COLUMNS");
 
     ln_init(4);
     test_ln_create01();

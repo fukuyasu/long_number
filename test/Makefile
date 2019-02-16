@@ -13,7 +13,7 @@ exec_test1:	test1
 	@echo "Test1..."
 	@./test1 | tee test1.output 2>&1
 	@if diff -u test1.expected test1.output; then \
-		echo "Test1: clear."; \
+		echo "Test1: passed."; \
 	else \
 		echo "Test1: failed."; \
 	fi

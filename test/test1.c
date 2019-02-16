@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "longnumber.h"
 
 void test_ln_create01(void)
@@ -60,6 +61,8 @@ void test_ln_add03(void)
 
 int main(void)
 {
+	unsetenv("COLUMNS");
+
     ln_init(4);
     test_ln_create01();
     test_ln_create02();

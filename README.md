@@ -40,11 +40,12 @@ pi:
 
 ## Benchmark
 
-| Hardware                               | 1k digits | 2k digits | 5k digits | 10k digits | 100k digits  |
-| :------------------------------------- | --------: | --------: | --------: | ---------: | -----------: |
-| Raspbian / Raspberry Pi 3 Model B      | 0.120 sec | 0.478 sec | 2.982 sec | 11.932 sec | 1193.150 sec | 
-| FreeBSD / Core i7-4770K / 3GB RAM      | 0.010 sec | 0.041 sec | 0.256 sec |  1.023 sec |  102.948 sec | 
-| Cygwin / Xeon W-2123 / 64GB RAM        | 0.009 sec | 0.035 sec | 0.221 sec |  0.883 sec |   89.453 sec | 
-| MinGW64 / Xeon W-2123 / 64GB RAM       | 0.011 sec | 0.045 sec | 0.252 sec |  1.015 sec |  103.935 sec | 
-| MSYS2 / Xeon W-2123 / 64GB RAM         | 0.010 sec | 0.046 sec | 0.255 sec |  1.091 sec |  103.829 sec | 
-| Ubuntu on WSL / Xeon W-2123 / 64GB RAM | 0.011 sec | 0.045 sec | 0.284 sec |  1.145 sec |  115.053 sec | 
+| Hardware                                           | 1k digits | 2k digits | 5k digits | 10k digits | 100k digits  |
+| :------------------------------------------------- | --------: | --------: | --------: | ---------: | -----------: |
+| Cygwin / Xeon W-2123 / GCC 7.3.0                   | 0.009 sec | 0.035 sec | 0.221 sec |  0.883 sec |   89.453 sec | 
+| MSYS2 / Xeon W-2123 / GCC 7.4.0                    | 0.010 sec | 0.046 sec | 0.255 sec |  1.091 sec |  103.829 sec | 
+| MinGW64 / Xeon W-2123 / GCC 8.2.1                  | 0.011 sec | 0.045 sec | 0.252 sec |  1.015 sec |  103.935 sec | 
+| MinGW64 / Xeon W-2123 / GCC 8.1.0                  | 0.010 sec | 0.042 sec | 0.255 sec |  1.017 sec |  104.410 sec | 
+| Ubuntu on WSL / Xeon W-2123 / GCC 5.4.0            | 0.011 sec | 0.045 sec | 0.284 sec |  1.145 sec |  115.053 sec | 
+| FreeBSD on XenServer / Core i7-4770K / Clang 4.0.0 | 0.010 sec | 0.041 sec | 0.256 sec |  1.023 sec |  102.948 sec | 
+| Raspbian / Raspberry Pi 3 Model B / GCC 4.9.2      | 0.120 sec | 0.478 sec | 2.982 sec | 11.932 sec | 1193.150 sec | 

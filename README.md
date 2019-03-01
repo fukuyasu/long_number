@@ -40,14 +40,15 @@ pi:
 
 ## Benchmark
 
-| Hardware                                           | 1k digits | 2k digits | 5k digits | 10k digits | 100k digits  |
-| :------------------------------------------------- | --------: | --------: | --------: | ---------: | -----------: |
-| Cygwin / Xeon W-2123 / GCC 7.3.0                   | 0.009 sec | 0.035 sec | 0.221 sec |  0.883 sec |   89.453 sec | 
-| MSYS2 / Xeon W-2123 / GCC 7.4.0                    | 0.010 sec | 0.046 sec | 0.255 sec |  1.091 sec |  103.829 sec | 
-| MinGW64 / Xeon W-2123 / GCC 8.2.1                  | 0.011 sec | 0.045 sec | 0.252 sec |  1.015 sec |  103.935 sec | 
-| MinGW64 / Xeon W-2123 / GCC 8.1.0                  | 0.010 sec | 0.042 sec | 0.255 sec |  1.017 sec |  104.410 sec | 
-| Ubuntu 16.04 on WSL / Xeon W-2123 / GCC 5.4.0      | 0.011 sec | 0.045 sec | 0.284 sec |  1.145 sec |  115.053 sec | 
-| FreeBSD 11.1 on XenServer / i7-4770K / Clang 4.0.0 | 0.010 sec | 0.041 sec | 0.256 sec |  1.023 sec |  102.948 sec | 
-| MinGW64 / Pentium 4415Y / GCC 8.1.0                | 0.015 sec | 0.093 sec | 0.593 sec |  2.358 sec |  237.228 sec |
-| Ubuntu 18.04 on WSL / Pentium 4415Y / GCC 7.3.0    | 0.023 sec | 0.094 sec | 0.589 sec |  2.358 sec |  236.027 sec |
-| Raspbian / Raspberry Pi 3 Model B / GCC 4.9.2      | 0.120 sec | 0.478 sec | 2.982 sec | 11.932 sec | 1193.150 sec |
+| Hardware                                           | 1k digits | 2k    | 5k    | 10k    | 100k     |
+| :------------------------------------------------- | --------: | ----: | ----: | -----: | -------: |
+| Cygwin / Xeon W-2123 / GCC 7.3.0                   | 0.009 sec | 0.035 | 0.221 |  0.883 |   89.453 |
+| FreeBSD 11.1 on XenServer / i7-4770K / Clang 4.0.0 | 0.010 sec | 0.041 | 0.256 |  1.023 |  102.948 |
+| MSYS2 / Xeon W-2123 / GCC 7.4.0                    | 0.010 sec | 0.046 | 0.255 |  1.091 |  103.829 |
+| MinGW64 / Xeon W-2123 / GCC 8.2.1                  | 0.011 sec | 0.045 | 0.252 |  1.015 |  103.935 |
+| MinGW64 / Xeon W-2123 / GCC 8.1.0                  | 0.010 sec | 0.042 | 0.255 |  1.017 |  104.410 |
+| Ubuntu 18.04 on WSL / Xeon W-2123 / GCC 7.3.0      | 0.010 sec | 0.041 | 0.271 |  1.011 |  109.510 |
+| Ubuntu 16.04 on WSL / Xeon W-2123 / GCC 5.4.0      | 0.011 sec | 0.045 | 0.284 |  1.145 |  115.053 |
+| MinGW64 / Pentium 4415Y / GCC 8.1.0                | 0.015 sec | 0.093 | 0.593 |  2.358 |  234.600 |
+| Ubuntu 18.04 on WSL / Pentium 4415Y / GCC 7.3.0    | 0.023 sec | 0.094 | 0.589 |  2.358 |  236.027 |
+| Raspbian / Raspberry Pi 3 Model B / GCC 4.9.2      | 0.120 sec | 0.478 | 2.982 | 11.932 | 1193.150 |

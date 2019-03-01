@@ -46,6 +46,8 @@ pi:
 | MSYS2 / Xeon W-2123 / GCC 7.4.0                    | 0.010 sec | 0.046 sec | 0.255 sec |  1.091 sec |  103.829 sec | 
 | MinGW64 / Xeon W-2123 / GCC 8.2.1                  | 0.011 sec | 0.045 sec | 0.252 sec |  1.015 sec |  103.935 sec | 
 | MinGW64 / Xeon W-2123 / GCC 8.1.0                  | 0.010 sec | 0.042 sec | 0.255 sec |  1.017 sec |  104.410 sec | 
-| Ubuntu on WSL / Xeon W-2123 / GCC 5.4.0            | 0.011 sec | 0.045 sec | 0.284 sec |  1.145 sec |  115.053 sec | 
-| FreeBSD on XenServer / Core i7-4770K / Clang 4.0.0 | 0.010 sec | 0.041 sec | 0.256 sec |  1.023 sec |  102.948 sec | 
-| Raspbian / Raspberry Pi 3 Model B / GCC 4.9.2      | 0.120 sec | 0.478 sec | 2.982 sec | 11.932 sec | 1193.150 sec | 
+| Ubuntu 16.04 on WSL / Xeon W-2123 / GCC 5.4.0      | 0.011 sec | 0.045 sec | 0.284 sec |  1.145 sec |  115.053 sec | 
+| FreeBSD 11.1 on XenServer / i7-4770K / Clang 4.0.0 | 0.010 sec | 0.041 sec | 0.256 sec |  1.023 sec |  102.948 sec | 
+| MinGW64 / Pentium 4415Y / GCC 8.1.0                | 0.015 sec | 0.093 sec | 0.593 sec |  2.358 sec |  237.228 sec |
+| Ubuntu 18.04 on WSL / Pentium 4415Y / GCC 7.3.0    | 0.023 sec | 0.094 sec | 0.589 sec |  2.358 sec |  236.027 sec |
+| Raspbian / Raspberry Pi 3 Model B / GCC 4.9.2      | 0.120 sec | 0.478 sec | 2.982 sec | 11.932 sec | 1193.150 sec |

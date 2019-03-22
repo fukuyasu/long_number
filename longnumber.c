@@ -67,21 +67,13 @@ void ln_print(LongNumber *c, size_t l, char *s)
         printf("%0*u ", LN_DIGITS, c->frac_d[i]);
         if ((i+1) % ((cols-30)/(LN_DIGITS+1)) == 0 && i != l-1) {
             ep = (i+1) * LN_DIGITS;
-#if !defined(__MSVCRT__)
             printf("(%4zu-%4zu)\n", sp, ep);
-#else /* defined(__MSVCRT__) */
-            printf("(%4u-%4u)\n", sp, ep);
-#endif /* !defined(__MSVCRT__) */
             printf("        ");
             sp = ep + 1;
         }
     }
     ep = l * LN_DIGITS;
-#if !defined(__MSVCRT__)
     printf("(%4zu-%4zu)\n", sp, ep);
-#else /* defined(__MSVCRT__) */
-    printf("(%4u-%4u)\n", sp, ep);
-#endif /* !defined(__MSVCRT__) */
 }
 
 void ln_add(LongNumber *c, LongNumber *a, LongNumber *b, size_t l)

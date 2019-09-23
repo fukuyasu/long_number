@@ -33,16 +33,13 @@ clean::
 	$(RM) longnumber.o
 
 machinespec:
-	@(												 \
-		uname=`uname -s -r`							;\
-		cversion=`$(CC) --version | head -1`		;\
-		echo $$uname $$cversion						;\
-	)
-	@if [ -e "/proc/cpuinfo" ]						;\
-	then											 \
-		grep "model name" /proc/cpuinfo | head -1	;\
-	else											 \
-		dmesg | grep "CPU" | head -1				;\
+	@uname -s -r
+	@$(CC) --version | head -1
+	@if [ -e "/proc/cpuinfo" ];\
+	then\
+		grep "model name" /proc/cpuinfo | head -1;\
+	else\
+		dmesg | grep "CPU" | head -1;\
 	fi
 
 benchmark:	pi machinespec

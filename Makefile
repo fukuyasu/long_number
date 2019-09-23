@@ -31,3 +31,15 @@ clean::
 clean::
 	$(RM) liblongnumber.a
 	$(RM) longnumber.o
+
+machinespec:
+	@(\
+		uname=`uname -s -r`						;\
+		cversion=`$(CC) --version | head -1`	;\
+		echo $$uname $$cversion					;\
+	)
+
+benchmark:	pi machinespec
+	@./pi -s 1000
+	@./pi -s 2000
+	@./pi -s 5000
